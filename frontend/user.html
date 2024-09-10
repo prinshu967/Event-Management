@@ -1,0 +1,132 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(to right, #4CAF50, #00b4db);
+            color: white;
+        }
+        h1 {
+            margin: 20px 0;
+        }
+        .container {
+            text-align: center;
+        }
+        .btn {
+            background-color: #4CAF50;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 10px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #45a049;
+        }
+        .product {
+            margin: 20px;
+            text-align: center;
+        }
+        .cart-item {
+            margin: 10px;
+        }
+    </style>
+</head>
+<body>
+    <h1>User Dashboard</h1>
+    <button id="logoutBtn" class="btn">Logout</button>
+
+    <h2>Products</h2>
+    <div id="productsList"></div>
+
+    <h2>Cart</h2>
+    <div id="cart"></div>
+
+    <button id="checkoutBtn" class="btn">Checkout</button>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            // Fetch and display products
+            fetch('/products')
+                .then(response => response.json())
+                .then(products => {
+                    const productsList = document.getElementById('productsList');
+                    products.forEach(product => {
+                        const productDiv = document.createElement('div');
+                        productDiv.className = 'product';
+                        productDiv.innerHTML = `
+                            <h3>${product.name}</h3>
+                            <p>${product.description}</p>
+                            <p>$${product.price}</p>
+                            <button onclick="addToCart(${product.id}, '${product.name}', ${product.price})">Add to Cart</button>
+                        `;
+                        productsList.appendChild(productDiv);
+                    });
+                })
+                .catch(error => alert('Error fetching products: ' + error.message));
+
+            // Handle cart
+            const cart = JSON.parse(localStorage.getItem('cart')) || [];
+            window.addToCart = function (productId, productName, productPrice) {
+                const existingItem = cart.find(item => item.productId === productId);
+                if (existingItem) {
+                    existingItem.quantity += 1;
+                } else {
+                    cart.push({ productId, productName, productPrice, quantity: 1 });
+                }
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartDisplay();
+            };
+
+            function updateCartDisplay() {
+                const cartDiv = document.getElementById('cart');
+                cartDiv.innerHTML = '';
+                cart.forEach(item => {
+                    const cartItem = document.createElement('div');
+                    cartItem.className = 'cart-item';
+                    cartItem.innerHTML = `
+                        <p>${item.productName} - $${item.productPrice} x ${item.quantity}</p>
+                    `;
+                    cartDiv.appendChild(cartItem);
+                });
+            }
+
+            updateCartDisplay();
+
+            // Handle checkout
+            document.getElementById('checkoutBtn').addEventListener('click', function () {
+                const userId = 'your-logged-in-user-id'; // Replace with actual user ID logic
+                fetch('/order', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ user_id: userId, cart, status: 'pending' })
+                })
+                .then(response => response.json())
+                .then(data => {
+                    alert('Order placed successfully');
+                    localStorage.removeItem('cart'); // Clear cart
+                    updateCartDisplay();
+                })
+                .catch(error => alert('Error placing order: ' + error.message));
+            });
+
+            // User: Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function () {
+                // Clear any session or token, then redirect to login page
+                window.location.href = 'index.html';
+            });
+        });
+    </script>
+</body>
+</html>

@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Vendor Dashboard</title>
+    <style>
+        body {
+            font-family: 'Arial', sans-serif;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            background: linear-gradient(to right, #4CAF50, #00b4db);
+            color: white;
+        }
+        h1 {
+            margin: 20px 0;
+        }
+        .container {
+            text-align: center;
+        }
+        .btn {
+            background-color: #008CBA;
+            color: white;
+            padding: 15px 32px;
+            margin: 10px;
+            text-align: center;
+            font-size: 16px;
+            cursor: pointer;
+            border: none;
+            border-radius: 4px;
+            transition: background-color 0.3s ease;
+        }
+        .btn:hover {
+            background-color: #005f6b;
+        }
+        form {
+            margin-top: 20px;
+        }
+        input[type="text"],
+        input[type="number"],
+        input[type="submit"] {
+            padding: 10px;
+            margin: 10px 0;
+            font-size: 16px;
+            border-radius: 4px;
+        }
+        input[type="submit"] {
+            background-color: #4CAF50;
+            color: white;
+            cursor: pointer;
+            border: none;
+        }
+        input[type="submit"]:hover {
+            background-color: #45a049;
+        }
+    </style>
+</head>
+<body>
+    <h1>Vendor Dashboard</h1>
+    <button id="logoutBtn" class="btn">Logout</button>
+
+    <h2>Add Product</h2>
+    <form id="addProductForm">
+        <input type="text" id="productName" placeholder="Product Name" required>
+        <input type="text" id="productDescription" placeholder="Description">
+        <input type="number" id="productPrice" placeholder="Price" required>
+        <input type="number" id="vendorId" placeholder="Vendor ID" required>
+        <input type="submit" value="Add Product">
+    </form>
+
+    <script >
+        // Vendor: Add Product
+document.getElementById('addProductForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    const name = document.getElementById('productName').value;
+    const description = document.getElementById('productDescription').value;
+    const price = document.getElementById('productPrice').value;
+    const vendorId = document.getElementById('vendorId').value;
+
+    fetch('/vendor/addProduct', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ name, description, price, vendor_id: vendorId })
+    }).then(response => response.json())
+    .then(data => {
+        alert('Product added successfully');
+        document.getElementById('productName').value = '';
+        document.getElementById('productDescription').value = '';
+        document.getElementById('productPrice').value = '';
+        document.getElementById('vendorId').value = '';
+    }).catch(error => alert('Error: ' + error.message));
+});
+
+// Vendor: Logout functionality
+document.getElementById('logoutBtn').addEventListener('click', function () {
+    // Clear any session or token, then redirect to login page
+    window.location.href = 'index.html';
+});
+
+    </script>
+</body>
+</html>
+
+
+
+
+

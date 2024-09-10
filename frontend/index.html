@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Event Management System</title>
+    <link rel="stylesheet" href="style.css">
+</head>
+<body>
+    <h1>Event Management System</h1>
+    <div class="container">
+        <button id="loginBtn" class="btn">Login</button>
+        <button id="signupBtn" class="btn">Sign Up</button>
+    </div>
+
+    <!-- Login Modal -->
+    <div id="loginModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModals()">&times;</span>
+            <h2>Login</h2>
+            <form id="loginForm">
+                <input type="text" id="loginUserId" placeholder="User ID" required>
+                <input type="password" id="loginPassword" placeholder="Password" required>
+                <input type="submit" value="Login">
+            </form>
+        </div>
+    </div>
+
+    <!-- Sign Up Modal -->
+    <div id="signupModal" class="modal">
+        <div class="modal-content">
+            <span class="close" onclick="closeModals()">&times;</span>
+            <h2>Sign Up</h2>
+            <form id="signupForm">
+                <input type="text" id="signupName" placeholder="Name" required>
+                <select id="signupRole" required>
+                    <option value="" disabled selected>Select Role</option>
+                    <option value="user">User</option>
+                    <option value="vendor">Vendor</option>
+                </select>
+                <input type="password" id="signupPassword" placeholder="Password" required>
+                <input type="submit" value="Sign Up">
+            </form>
+            <p id="generatedUserId"></p>
+        </div>
+    </div>
+    <script src="script.js"></script>
+</body>
+</html>
